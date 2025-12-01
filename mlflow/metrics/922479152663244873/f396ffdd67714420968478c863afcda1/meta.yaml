@@ -1,0 +1,14 @@
+artifact_uri: s3://project-ml-college/mlflow-artifacts/f396ffdd67714420968478c863afcda1/artifacts
+end_time: 1764591349784
+entry_point_name: ''
+experiment_id: '922479152663244873'
+lifecycle_stage: active
+run_id: f396ffdd67714420968478c863afcda1
+run_name: Decision Tree
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764591346746
+status: 3
+tags: []
+user_id: evaldocunhafilho

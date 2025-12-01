@@ -1,0 +1,6 @@
+artifact_location: s3://project-ml-college/mlflow-artifacts/
+creation_time: 1764591341218
+experiment_id: '922479152663244873'
+last_update_time: 1764591341218
+lifecycle_stage: active
+name: heart-disease-ml

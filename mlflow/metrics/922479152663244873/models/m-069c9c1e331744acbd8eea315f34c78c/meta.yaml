@@ -1,0 +1,10 @@
+artifact_location: s3://project-ml-college/mlflow-artifacts/models/m-069c9c1e331744acbd8eea315f34c78c/artifacts
+creation_timestamp: 1764591343250
+experiment_id: '922479152663244873'
+last_updated_timestamp: 1764591346738
+model_id: m-069c9c1e331744acbd8eea315f34c78c
+model_type: null
+name: model
+source_run_id: 931e5b594240490a982849ec20cb7edd
+status: 2
+status_message: null

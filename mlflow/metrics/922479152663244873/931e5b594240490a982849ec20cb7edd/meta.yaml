@@ -1,0 +1,14 @@
+artifact_uri: s3://project-ml-college/mlflow-artifacts/931e5b594240490a982849ec20cb7edd/artifacts
+end_time: 1764591346743
+entry_point_name: ''
+experiment_id: '922479152663244873'
+lifecycle_stage: active
+run_id: 931e5b594240490a982849ec20cb7edd
+run_name: Logistic Regression
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764591343223
+status: 3
+tags: []
+user_id: evaldocunhafilho

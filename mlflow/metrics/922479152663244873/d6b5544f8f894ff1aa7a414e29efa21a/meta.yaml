@@ -1,0 +1,14 @@
+artifact_uri: s3://project-ml-college/mlflow-artifacts/d6b5544f8f894ff1aa7a414e29efa21a/artifacts
+end_time: 1764591358134
+entry_point_name: ''
+experiment_id: '922479152663244873'
+lifecycle_stage: active
+run_id: d6b5544f8f894ff1aa7a414e29efa21a
+run_name: Gradient Boosting
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764591354065
+status: 3
+tags: []
+user_id: evaldocunhafilho

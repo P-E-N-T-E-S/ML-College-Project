@@ -1,0 +1,14 @@
+artifact_uri: s3://project-ml-college/mlflow-artifacts/309c444e359a4fff874fa3e8860f0e88/artifacts
+end_time: 1764591361219
+entry_point_name: ''
+experiment_id: '922479152663244873'
+lifecycle_stage: active
+run_id: 309c444e359a4fff874fa3e8860f0e88
+run_name: Support Vector Machine
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1764591358136
+status: 3
+tags: []
+user_id: evaldocunhafilho

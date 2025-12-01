@@ -1,0 +1,6 @@
+mlflow
+pandas
+scikit-learn
+snowflake-connector-python
+python-dotenv
+boto3

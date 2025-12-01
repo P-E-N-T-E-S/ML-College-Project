@@ -1,0 +1,23 @@
+services:
+  # trendz:
+  #   build:
+  #     context: ./mlflow
+  #     dockerfile: Dockerfile
+  #   container_name: trendz-analytics
+  #   ports:
+  #     - "5000:8080"
+  #   volumes:
+  #     - ./mlflow:/mlflow
+  #   restart: unless-stopped
+
+  fastapi-app:
+    build:
+      context: ./fastapi
+      dockerfile: Dockerfile
+    container_name: fastapi-app
+    ports:
+      - "8060:8080"
+    volumes:
+      - ./fastapi:/app
+
+    restart: unless-stopped

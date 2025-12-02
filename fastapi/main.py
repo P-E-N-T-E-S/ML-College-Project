@@ -43,3 +43,7 @@ async def upload_file(file: UploadFile = File(...)):
 
     except NoCredentialsError:
         return {"error": "Credenciais AWS inválidas ou ausentes."}
+
+@app.get("/hello")
+async def say_hello():
+    return {"message": "Hello, world!"}

@@ -1,23 +1,93 @@
 services:
-  # trendz:
-  #   build:
-  #     context: ./mlflow
-  #     dockerfile: Dockerfile
-  #   container_name: trendz-analytics
-  #   ports:
-  #     - "5000:8080"
-  #   volumes:
-  #     - ./mlflow:/mlflow
-  #   restart: unless-stopped
+  # PostgreSQL para ThingsBoard
+  postgres:
+    image: postgres:15
+    container_name: tb-postgres
+    restart: always
+    environment:
+      POSTGRES_DB: thingsboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
 
+  # ThingsBoard
+  thingsboard:
+    image: thingsboard/tb-postgres:latest
+    platform: linux/amd64
+    container_name: thingsboard
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+      - "1883:1883"
+      - "7071:7070"
+      - "5683-5688:5683-5688/udp"
+    environment:
+      TB_QUEUE_TYPE: in-memory
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/thingsboard
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    volumes:
+      - thingsboard-data:/data
+      - thingsboard-logs:/var/log/thingsboard
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9090/login || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 90s
+    networks:
+      - app-network
+
+  # Trendz Analytics
+  trendz:
+    image: thingsboard/trendz:latest
+    platform: linux/amd64
+    container_name: trendz
+    restart: unless-stopped
+    ports:
+      - "8889:8888"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/trendz
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      TB_API_URL: http://thingsboard:9090
+      TRENDZ_LICENSE_INSTANCE_DATA_FILE: /data/license.data
+    volumes:
+      - trendz-data:/data
+    depends_on:
+      postgres:
+        condition: service_started
+      thingsboard:
+        condition: service_healthy
+    networks:
+      - app-network
   fastapi-app:
     build:
       context: ./fastapi
       dockerfile: Dockerfile
     container_name: fastapi-app
     ports:
-      - "8060:8080"
+      - "8060:8000"
     volumes:
       - ./fastapi:/app
-
     restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  postgres-data:
+  thingsboard-data:
+  thingsboard-logs:
+  trendz-data:
+  trendz-logs:
+
+networks:
+ app-network:

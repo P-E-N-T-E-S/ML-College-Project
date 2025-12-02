@@ -18,7 +18,7 @@ services:
 
   # ThingsBoard
   thingsboard:
-    image: thingsboard/tb-postgres:latest
+    image: thingsboard/tb-postgres
     platform: linux/amd64
     container_name: thingsboard
     restart: unless-stopped
@@ -32,17 +32,18 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/thingsboard
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      TB_SECURITY_JWT_TOKEN_SIGNING_KEY: ${JWT_TOKEN_SIGNING_KEY}
     volumes:
       - thingsboard-data:/data
       - thingsboard-logs:/var/log/thingsboard
     depends_on:
       - postgres
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9090/login || exit 1"]
-      interval: 15s
+      test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/localhost/9090' || exit 1"]
+      interval: 10s
       timeout: 5s
-      retries: 20
-      start_period: 90s
+      retries: 10
+      start_period: 60s
     networks:
       - app-network
 
@@ -60,6 +61,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       TB_API_URL: http://thingsboard:9090
       TRENDZ_LICENSE_INSTANCE_DATA_FILE: /data/license.data
+      JWT_TOKEN_SIGNING_KEY: ${JWT_TOKEN_SIGNING_KEY}
     volumes:
       - trendz-data:/data
     depends_on:

@@ -36,6 +36,7 @@ services:
     volumes:
       - thingsboard-data:/data
       - thingsboard-logs:/var/log/thingsboard
+      - ./thingsboard/dashboards:/dashboards:ro
     depends_on:
       - postgres
     healthcheck:

@@ -4,9 +4,13 @@
 
 | Nome | GitHub |
 |------|--------|
-| [Nome do Membro 1] | [@usuario1](https://github.com/usuario1) |
-| [Nome do Membro 2] | [@usuario2](https://github.com/usuario2) |
-| [Nome do Membro 3] | [@usuario3](https://github.com/usuario3) |
+| [Evaldo Galdino] | [@evaldocunhaf](https://github.com/evaldocunhaf) |
+| [Lizandra Vieira] | [@lizandravieira](https://github.com/lizandravieira) |
+| [Kauan Novello] | [@kauan-novello](https://github.com/kauan-novello) |
+| [Sofia Saraiva] | [@Sofia-Saraiva](https://github.com/Sofia-Saraiva) |
+| [Pedro Henrique Silva Souza] | [@hsspedro](https://github.com/hsspedro) |
+
+
 
 ## 🎓 Informações Acadêmicas
 

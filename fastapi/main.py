@@ -12,7 +12,7 @@ AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
 AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 REGION = os.getenv("REGION")
 BUCKET_NAME = os.getenv("BUCKET_NAME")
-BUCKER_DIRECTORY = os.getenv("BUCKER_DIRECTORY")
+BUCKET_DIRECTORY = os.getenv("BUCKET_DIRECTORY")
 
 s3 = boto3.client(
     "s3",
@@ -29,7 +29,7 @@ async def upload_file(file: UploadFile = File(...)):
         content = await file.read()
 
         # Define o caminho final dentro do bucket
-        s3_key = f"{BUCKER_DIRECTORY}{file.filename}"
+        s3_key = f"{BUCKET_DIRECTORY}{file.filename}"
 
         # Envia para o S3
         s3.put_object(

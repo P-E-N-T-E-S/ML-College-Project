@@ -132,10 +132,7 @@ cp .env mlflow/.env
 
 ```bash
 # Construir e iniciar todos os serviços
-docker compose up -d --build
-
-# Ou iniciar serviços específicos
-docker compose up -d fastapi mlflow jupyterlab jupyterhub
+chmod +x init-containers.sh && ./init-containers.sh
 ```
 
 ### 5️⃣ Verificar Status dos Containers

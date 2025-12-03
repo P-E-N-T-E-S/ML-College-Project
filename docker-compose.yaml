@@ -46,7 +46,7 @@ services:
       start_period: 60s
     networks:
       - app-network
-      
+
 
   fastapi-app:
     build:
@@ -107,6 +107,21 @@ services:
       - ./notebooks:/workspace
     networks:
       - app-network
+
+  streaming:
+    build:
+      context: .
+      dockerfile: stream/Dockerfile
+    container_name: heart-disease-streaming
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./stream/.env:/app/.env:ro
+    depends_on:
+      - thingsboard  
+    networks:
+      - app-network  
+    command: ["python", "stream_simulator.py", "--delay", "1", "--max-samples", "50", "--no-api"]
 
 volumes:
   postgres-data:

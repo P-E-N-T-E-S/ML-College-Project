@@ -15,6 +15,7 @@ from utils import *
 from dotenv import load_dotenv
 import os
 from mlflow.models.signature import infer_signature
+from datetime import datetime
 
 load_dotenv()
 
@@ -32,13 +33,17 @@ os.environ["AWS_ACCESS_KEY_ID"] = os.getenv("AWS_ACCESS_KEY_ID")
 os.environ["AWS_SECRET_ACCESS_KEY"] = os.getenv("AWS_SECRET_ACCESS_KEY")
 os.environ["AWS_DEFAULT_REGION"] = os.getenv("AWS_DEFAULT_REGION", "us-east-2")
 
+# Verificar se as credenciais AWS foram carregadas
+print(f"AWS_ACCESS_KEY_ID configurado: {bool(os.environ.get('AWS_ACCESS_KEY_ID'))}")
+print(f"AWS Region: {os.environ.get('AWS_DEFAULT_REGION')}")
+
 # ============================
 #  CONFIGURAÇÃO PRINCIPAL
 # ============================
 
-# SOLUÇÃO: Usar tracking URI local mas forçar artefatos para S3
-# Configurar tracking URI local para métricas/parâmetros
-mlflow.set_tracking_uri(METRICS_PATH)
+# Usar SQLite como backend de tracking e S3 para artefatos
+# Configurar tracking URI com SQLite
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 
 # Configurar o experimento
 experiment_name = "heart-disease-ml"
@@ -116,9 +121,14 @@ print("Modelos definidos com sucesso!")
 
 cv_results = []
 
+# Adicionar timestamp para forçar novos runs
+timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
 for model_name, best_model in models.items():
 
-    with mlflow.start_run(run_name=model_name):
+    run_name_with_time = f"{model_name}_{timestamp}"
+    
+    with mlflow.start_run(run_name=run_name_with_time):
     
         # Treinar o modelo
         print("Treinando o modelo: {}".format(model_name))
@@ -133,6 +143,12 @@ for model_name, best_model in models.items():
         
         cv_results.append(metrics)
 
+        # Printar métricas
+        print(f"\nMétricas para {model_name}:")
+        for metric_name, metric_value in metrics.items():
+            print(f"  {metric_name}: {metric_value:.4f}")
+        print()
+
         # Logar métricas individualmente
         for metric_name, metric_value in metrics.items():
             mlflow.log_metric(metric_name, metric_value)
@@ -144,12 +160,33 @@ for model_name, best_model in models.items():
         except Exception:
             signature = None
 
-        # Salvar modelo com signature e input_example
-        mlflow.sklearn.log_model(best_model, "model", signature=signature, input_example=X_example)
+        # Salvar modelo com signature e input_example usando o nome do modelo
+        model_artifact_name = model_name.lower().replace(" ", "_")
         
-        # Upload manual do modelo para S3 (garantir que vai para o bucket)
+        # Obter informações do run atual
         run_id = mlflow.active_run().info.run_id
-        print(f"Modelo {model_name} salvo. Run ID: {run_id}")
-        print(f"Artefatos em: mlartifacts/{experiment_id}/{run_id}/artifacts/model")
+        run_info = mlflow.active_run().info
+        
+        print(f"\n{'='*60}")
+        print(f"Salvando modelo: {model_name}")
+        print(f"Run ID: {run_id}")
+        print(f"Artifact URI do experimento: {run_info.artifact_uri}")
+        
+        # Log do modelo para o S3
+        try:
+            model_info = mlflow.sklearn.log_model(
+                sk_model=best_model, 
+                artifact_path=model_artifact_name,
+                signature=signature, 
+                input_example=X_example
+            )
+            print(f"✓ Modelo salvo com sucesso!")
+            print(f"  Model URI: {model_info.model_uri}")
+            print(f"  Artifact path: {model_artifact_name}")
+        except Exception as e:
+            print(f"✗ Erro ao salvar modelo: {str(e)}")
+            raise
+        
+        print(f"{'='*60}\n")
 
 print("Métricas salvas localmente e modelo enviado para S3!")

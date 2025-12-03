@@ -361,8 +361,15 @@ class StreamingSimulator:
         total = len(X_val)
         correct_predictions = 0
         
+        # Contadores de classes
+        predicted_class_0 = 0  # Predições de "Saudável"
+        predicted_class_1 = 0  # Predições de "Doença"
+        real_class_0 = int((y_val == 0).sum())  # Total real de "Saudável"
+        real_class_1 = int((y_val == 1).sum())  # Total real de "Doença"
+        
         logger.info(f"\n{'='*60}")
         logger.info(f"📊 INICIANDO STREAMING DE {total} PACIENTES")
+        logger.info(f"📊 Distribuição Real: Saudável={real_class_0}, Doença={real_class_1}")
         logger.info(f"{'='*60}\n")
         
         # Processar cada amostra
@@ -409,6 +416,12 @@ class StreamingSimulator:
                     traceback.print_exc()
                     continue
             
+            # Atualizar contadores de classes preditas
+            if predicted_label == 0:
+                predicted_class_0 += 1
+            else:
+                predicted_class_1 += 1
+            
             # Avaliar resultado
             is_correct = (predicted_label == true_label)
             if is_correct:
@@ -421,6 +434,7 @@ class StreamingSimulator:
             logger.info(f"🤖 Modelo: {model_name}")
             logger.info(f"{emoji} {'CORRETO' if is_correct else 'INCORRETO'}")
             logger.info(f"📈 Acurácia Atual: {correct_predictions}/{idx} ({correct_predictions/idx*100:.1f}%)")
+            logger.info(f"📊 Predições até agora: Saudável={predicted_class_0}, Doença={predicted_class_1}")
             
             # Enviar para ThingsBoard se configurado
             if self.tb_client:
@@ -430,7 +444,11 @@ class StreamingSimulator:
                     probability=probability,
                     true_label=true_label,
                     is_correct=is_correct,
-                    model_name=model_name
+                    model_name=model_name,
+                    predicted_class_0=predicted_class_0,
+                    predicted_class_1=predicted_class_1,
+                    real_class_0=real_class_0,
+                    real_class_1=real_class_1
                 )
             
             # Delay antes da próxima amostra
@@ -447,6 +465,10 @@ class StreamingSimulator:
         logger.info(f"✅ Predições corretas: {correct_predictions}")
         logger.info(f"❌ Predições incorretas: {total - correct_predictions}")
         logger.info(f"📈 Acurácia Final: {final_accuracy:.2f}%")
+        logger.info(f"")
+        logger.info(f"📊 DISTRIBUIÇÃO DE CLASSES:")
+        logger.info(f"  Real: Saudável={real_class_0}, Doença={real_class_1}")
+        logger.info(f"  Predito: Saudável={predicted_class_0}, Doença={predicted_class_1}")
         logger.info(f"{'='*60}\n")
         
         # Enviar resumo final para ThingsBoard
@@ -454,7 +476,11 @@ class StreamingSimulator:
             self.tb_client.send_summary(
                 total=total,
                 correct=correct_predictions,
-                accuracy=final_accuracy
+                accuracy=final_accuracy,
+                predicted_class_0=predicted_class_0,
+                predicted_class_1=predicted_class_1,
+                real_class_0=real_class_0,
+                real_class_1=real_class_1
             )
             logger.info("📊 Resumo enviado para ThingsBoard")
 

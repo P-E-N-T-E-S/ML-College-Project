@@ -92,7 +92,9 @@ class ThingsBoardClient:
             return False
     
     def send_prediction(self, patient_id: int, prediction: int, probability: float,
-                       true_label: int, is_correct: bool, model_name: str) -> bool:
+                       true_label: int, is_correct: bool, model_name: str,
+                       predicted_class_0: int = 0, predicted_class_1: int = 0,
+                       real_class_0: int = 0, real_class_1: int = 0) -> bool:
         """
         Envia dados de uma predição
         
@@ -103,6 +105,10 @@ class ThingsBoardClient:
             true_label: Label verdadeiro
             is_correct: Se a predição estava correta
             model_name: Nome do modelo
+            predicted_class_0: Total de predições classe 0 até agora
+            predicted_class_1: Total de predições classe 1 até agora
+            real_class_0: Total real de amostras classe 0
+            real_class_1: Total real de amostras classe 1
             
         Returns:
             True se sucesso
@@ -113,6 +119,10 @@ class ThingsBoardClient:
             "probability": probability * 100,  # Converter para porcentagem
             "true_label": true_label,
             "is_correct": 1 if is_correct else 0,
+            "predicted_class_0": predicted_class_0,
+            "predicted_class_1": predicted_class_1,
+            "real_class_0": real_class_0,
+            "real_class_1": real_class_1,
             "timestamp": int(datetime.now().timestamp() * 1000)  # Timestamp em ms
         }
         
@@ -124,7 +134,9 @@ class ThingsBoardClient:
         self.send_attributes(attributes)
         return self.send_telemetry(telemetry)
     
-    def send_summary(self, total: int, correct: int, accuracy: float) -> bool:
+    def send_summary(self, total: int, correct: int, accuracy: float,
+                    predicted_class_0: int = 0, predicted_class_1: int = 0,
+                    real_class_0: int = 0, real_class_1: int = 0) -> bool:
         """
         Envia resumo das predições
         
@@ -132,6 +144,10 @@ class ThingsBoardClient:
             total: Total de predições
             correct: Predições corretas
             accuracy: Acurácia (0-100)
+            predicted_class_0: Total de predições classe 0
+            predicted_class_1: Total de predições classe 1
+            real_class_0: Total real de amostras classe 0
+            real_class_1: Total real de amostras classe 1
             
         Returns:
             True se sucesso
@@ -140,6 +156,10 @@ class ThingsBoardClient:
             "total_predictions": total,
             "correct_predictions": correct,
             "accuracy": accuracy,
+            "predicted_class_0": predicted_class_0,
+            "predicted_class_1": predicted_class_1,
+            "real_class_0": real_class_0,
+            "real_class_1": real_class_1,
             "timestamp": int(datetime.now().timestamp() * 1000)
         }
         

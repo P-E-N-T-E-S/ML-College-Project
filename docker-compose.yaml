@@ -61,6 +61,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       TB_API_URL: http://thingsboard:9090
       TRENDZ_LICENSE_INSTANCE_DATA_FILE: /data/license.data
+      TRENDZ_LICENSE_SECRET: ""
       JWT_TOKEN_SIGNING_KEY: ${JWT_TOKEN_SIGNING_KEY}
     volumes:
       - trendz-data:/data
@@ -84,12 +85,62 @@ services:
     networks:
       - app-network
 
+
+  jupyterlab:
+    image: jupyter/datascience-notebook:latest
+    container_name: jupyterlab
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - ./jupyterlab:/home/jovyan/jupyterlab
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+      GRANT_SUDO: "yes"
+    user: root
+    networks:
+      - app-network
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+
+  mlflow:
+    build:
+      context: ./mlflow
+      dockerfile: Dockerfile
+    container_name: mlflow
+    restart: unless-stopped
+    ports:
+      - "5050:5000"
+    volumes:
+      - ./mlflow:/app
+      - ./mlflow/.env:/app/.env:ro
+      - mlflow-artifacts:/app/mlruns
+      - mlflow-metrics:/app/metrics
+    networks:
+      - app-network
+
+  jupyterhub:
+    build:
+      context: ./jupyterhub
+      dockerfile: Dockerfile
+    container_name: jupyterhub
+    restart: unless-stopped
+    ports:
+      - "8001:8888"
+    volumes:
+      - ./notebooks:/workspace
+    networks:
+      - app-network
+
 volumes:
   postgres-data:
   thingsboard-data:
   thingsboard-logs:
   trendz-data:
   trendz-logs:
+  mlflow-artifacts:
+  mlflow-metrics:
+  jupyterhub-data:
 
 networks:
  app-network:

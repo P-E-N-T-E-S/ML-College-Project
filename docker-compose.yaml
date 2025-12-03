@@ -46,32 +46,8 @@ services:
       start_period: 60s
     networks:
       - app-network
+      
 
-  # Trendz Analytics
-  trendz:
-    image: thingsboard/trendz:latest
-    platform: linux/amd64
-    container_name: trendz
-    restart: unless-stopped
-    ports:
-      - "8889:8888"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/trendz
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      TB_API_URL: http://thingsboard:9090
-      TRENDZ_LICENSE_INSTANCE_DATA_FILE: /data/license.data
-      TRENDZ_LICENSE_SECRET: ""
-      JWT_TOKEN_SIGNING_KEY: ${JWT_TOKEN_SIGNING_KEY}
-    volumes:
-      - trendz-data:/data
-    depends_on:
-      postgres:
-        condition: service_started
-      thingsboard:
-        condition: service_healthy
-    networks:
-      - app-network
   fastapi-app:
     build:
       context: ./fastapi

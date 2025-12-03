@@ -17,6 +17,7 @@
 - **Disciplina:** Aprendizado de Máquina - 2025.2
 - **Instituição:** CESAR School
 - **Projeto:** Predição de Doenças Cardíacas usando Machine Learning
+- **Artigo de base:** [Enhancing Prognosis Accuracy for Ischemic Cardiovascular Disease Using K Nearest Neighbor Algorithm: A Robust Approach](https://ieeexplore.ieee.org/document/10239171)
 
 ## 📋 Sobre o Projeto
 
@@ -72,7 +73,6 @@ ML-College-Project/
 | **JupyterLab** | 8888 | Ambiente de desenvolvimento individual |
 | **JupyterHub** | 8001 | Ambiente de desenvolvimento compartilhado |
 | **ThingsBoard** | 9090 | Dashboard de visualização IoT |
-| **Trendz Analytics** | 8889 | Analytics avançado do ThingsBoard |
 | **PostgreSQL** | 5433 | Banco de dados |
 
 ## 🚀 Instruções de Instalação e Execução

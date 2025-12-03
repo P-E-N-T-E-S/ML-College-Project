@@ -1,0 +1,12 @@
+jupyterlab
+notebook
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+plotly
+ipywidgets
+scipy
+python-dotenv
+snowflake-connector-python

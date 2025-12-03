@@ -12,17 +12,11 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Install JupyterLab and data science packages
-RUN pip install --no-cache-dir \
-    jupyterlab \
-    notebook \
-    pandas \
-    numpy \
-    scikit-learn \
-    matplotlib \
-    seaborn \
-    plotly \
-    ipywidgets
+# Copy requirements file
+COPY requirements.txt .
+
+# Install Python packages from requirements
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create workspace directory
 RUN mkdir -p /workspace
